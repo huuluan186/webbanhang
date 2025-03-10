@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: ql_websach
+      MYSQL_ROOT_PASSWORD: 123456789  # Đặt mật khẩu cho root
+    ports:
+      - "3309:3307"  # Map cổng 3307 trong container ra cổng 3309 trên máy host
+    volumes:
+      - db_data:/var/lib/mysql
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_NAME=ql_websach
+      - DB_USER=root
+      - DB_PASSWORD=123456789
+
+volumes:
+  db_data:
